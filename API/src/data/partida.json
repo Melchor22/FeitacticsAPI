@@ -1,0 +1,23 @@
+[
+  {
+    "idPartida": 1,
+    "Jugador1": "Pepe",
+    "Movimientos1": [],
+    "Jugador2": "JuanJuega",
+    "Movimientos2": [
+      {
+        "Escenario": 2,
+        "Carta": 1
+      },
+      {
+        "Escenario": 3,
+        "Carta": 2
+      },
+      {
+        "Escenario": 1,
+        "Carta": 5
+      }
+    ],
+    "Turno": "1"
+  }
+]
