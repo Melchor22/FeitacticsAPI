@@ -15,6 +15,7 @@ router.post('/iniciarsesion', (req, res) => {
             res.status(500).json({ error: 'Error al obtener el jugador' });
         } else {
             if (jugador) {
+                console.log(jugador);
                 res.status(200).json(jugador);
             } else {
                 res.status(404).json({ mensaje: 'No se encontró ningún jugador con las credenciales proporcionadas' });

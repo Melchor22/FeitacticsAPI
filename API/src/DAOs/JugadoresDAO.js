@@ -1,17 +1,18 @@
 const conexion = require('../conexion');
 
-function iniciarSesion(gamertag, contrasenia, callback) {
-    const consulta = 'SELECT * FROM jugadores WHERE BINARY Gamertag = ? AND BINARY contrasenia = ?';
-    const valores = [gamertag, contrasenia];
+function iniciarSesion(gamertagInicio, contraseniaInicio, callback) {
+    const consulta = 'SELECT * FROM jugadores j WHERE BINARY j.Gamertag = ? AND BINARY j.contrasenia = ?';
+    const valores = [gamertagInicio, contraseniaInicio];
 
     conexion.query(consulta, valores, (err, resultados) => {
-
         if (err) {
             return callback(err, null);
+        } else {
+            console.log(resultados);
+            const jugadorEncontrado = resultados.length > 0 ? resultados[0] : null;
+            console.log(jugadorEncontrado);
+            callback(null, jugadorEncontrado);
         }
-        
-        const jugadorEncontrado = resultados.length > 0 ? resultados[0] : null;
-        callback(null, jugadorEncontrado);
     });
 }
 
