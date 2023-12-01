@@ -114,24 +114,36 @@ router.post('/jugarturno', (req, res) => {
     console.log(jugadorEnPartida);
 
     if (jugadorEnPartida) {
-        if (jugadorEnPartida.Jugador1 === req.body.Gamertag) {
-            jugadorEnPartida.Movimientos1 = Movimientos;
-        } else {
-            jugadorEnPartida.Movimientos2 = Movimientos;
-        }
+        // Nueva validación para Movimientos1 y Movimientos2
+        if (!jugadorEnPartida.Movimientos1 || !jugadorEnPartida.Movimientos2) {
+            if (jugadorEnPartida.Jugador1 === req.body.Gamertag) {
+                // Validar si ya existe un movimiento del Jugador1
+                if (jugadorEnPartida.Movimientos1) {
+                    return res.status(400).json({ error: 'Ya se jugó un movimiento para Jugador1 en este turno.' });
+                } else {
+                    jugadorEnPartida.Movimientos1 = Movimientos;
+                }
+            } else {
+                // Validar si ya existe un movimiento del Jugador2
+                if (jugadorEnPartida.Movimientos2) {
+                    return res.status(400).json({ error: 'Ya se jugó un movimiento para Jugador2 en este turno.' });
+                } else {
+                    jugadorEnPartida.Movimientos2 = Movimientos;
+                }
+            }
 
-        fs.writeFileSync(partidaJSONPath, JSON.stringify(archivoPartida, null, 2));
-        res.status(200).json({ mensaje: 'Turno Jugado' });
+            fs.writeFileSync(partidaJSONPath, JSON.stringify(archivoPartida, null, 2));
+            return res.status(200).json({ mensaje: 'Turno Jugado' });
+        } else {
+            if (jugadorEnPartida.Jugador1 === req.body.Gamertag) {
+                return res.status(200).json(jugadorEnPartida.Movimientos2);
+            } else {
+                return res.status(200).json(jugadorEnPartida.Movimientos1);
+            }
+        }
     } else {
-        res.status(404).json({ error: 'Jugador fuera de partida' });
+        return res.status(404).json({ error: 'Jugador no encontrado en la partida' });
     }
 });
-
-
-    /*if (Array.isArray(Movimientos)) {
-        res.json({ Movimientos });
-    } else {
-        res.status(400).json({ error: 'El campo Movimientos no es un array válido.' });
-    }*/
 
 module.exports = router;

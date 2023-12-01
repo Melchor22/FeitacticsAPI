@@ -14,7 +14,6 @@ router.get('/recuperarCartas', (req, res) => {
                 res.status(404).json({mensaje: 'No se encontraron cartas'});
             }
         }
-        CartasDAO.cerrarConexion();
     });
 });
 
