@@ -1,23 +1,23 @@
 [
   {
     "idPartida": 1,
-    "Jugador1": "Pepe",
+    "Jugador1": "JuanJuega",
     "Movimientos1": [],
-    "Jugador2": "JuanJuega",
+    "MovimientosRegistrados1": 0,
+    "Consultado1": 0,
+    "Jugador2": "Pepe",
     "Movimientos2": [
       {
-        "Escenario": 2,
+        "Escenario": 4,
         "Carta": 1
       },
       {
         "Escenario": 3,
         "Carta": 2
-      },
-      {
-        "Escenario": 1,
-        "Carta": 5
       }
     ],
-    "Turno": "1"
+    "MovimientosRegistrados2": 1,
+    "Consultado2": 0,
+    "Turno": "2"
   }
 ]

@@ -105,7 +105,7 @@ router.post('/registrarjugador', (req, res) => {
     });
 });
 
-router.put('/modificarImagenPerfil', (req, res)  => {
+router.put('/modificarimagenperfil', (req, res)  => {
     console.log(req.body);
     const { Gamertag, idFoto } = req.body;
     JugadoresDAO.modificarImagenPerfil(Gamertag, idFoto, (err, resultado) => {
@@ -121,7 +121,7 @@ router.put('/modificarImagenPerfil', (req, res)  => {
     });
 });
 
-router.put('/modificarMazo', (req, res) => {
+router.put('/modificarmazo', (req, res) => {
     console.log(req.body);
     const { Gamertag, Mazo } = req.body;
     JugadoresDAO.modificarMazo(Gamertag, Mazo, (err, resultado) => {

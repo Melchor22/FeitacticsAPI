@@ -52,7 +52,7 @@ function modificarImagenPerfil(gamertag, idFoto, callback) {
     const consulta = 'UPDATE jugadores SET IDFoto = ? WHERE Gamertag = ?'
     const valores = [idFoto, gamertag]
 
-    conexion.query(consulta, (err, resultados) => {
+    conexion.query(consulta, valores, (err, resultados) => {
         if (err) {
             return callback(err, null);
         } else {

@@ -78,8 +78,12 @@ router.post('/solicitarpartida', (req, res) => {
                 "idPartida": archivoPartida.length > 0 ? archivoPartida.length + 1 : 1,
                 "Jugador1": archivoMatchmaking[0].Gamertag,
                 "Movimientos1": [],
+                "MovimientosRegistrados1": 0,
+                "Consultado1": 0,   
                 "Jugador2": archivoMatchmaking[1].Gamertag,
                 "Movimientos2": [],
+                "MovimientosRegistrados2": 0,
+                "Consultado2": 0,
                 "Turno": "1"
             }
     
@@ -100,7 +104,6 @@ router.post('/jugarturno', (req, res) => {
 
     try {
         archivoPartida = require(partidaJSONPath);
-        console.log(archivoPartida);
     } catch (error) {
         console.error('Error al leer el archivo JSON: ', error);
         res.status(500).send('Error al leer el archivo JSON.');
@@ -113,37 +116,54 @@ router.post('/jugarturno', (req, res) => {
     const jugadorEnPartida = archivoPartida.find(jugador => jugador.Jugador1 === req.body.Gamertag || jugador.Jugador2 === req.body.Gamertag);
     console.log(jugadorEnPartida);
 
-    if (jugadorEnPartida) {
-        // Nueva validación para Movimientos1 y Movimientos2
-        if (!jugadorEnPartida.Movimientos1 || !jugadorEnPartida.Movimientos2) {
-            if (jugadorEnPartida.Jugador1 === req.body.Gamertag) {
-                // Validar si ya existe un movimiento del Jugador1
-                if (jugadorEnPartida.Movimientos1) {
-                    return res.status(400).json({ error: 'Ya se jugó un movimiento para Jugador1 en este turno.' });
-                } else {
-                    jugadorEnPartida.Movimientos1 = Movimientos;
-                }
-            } else {
-                // Validar si ya existe un movimiento del Jugador2
-                if (jugadorEnPartida.Movimientos2) {
-                    return res.status(400).json({ error: 'Ya se jugó un movimiento para Jugador2 en este turno.' });
-                } else {
-                    jugadorEnPartida.Movimientos2 = Movimientos;
-                }
-            }
-
-            fs.writeFileSync(partidaJSONPath, JSON.stringify(archivoPartida, null, 2));
-            return res.status(200).json({ mensaje: 'Turno Jugado' });
-        } else {
-            if (jugadorEnPartida.Jugador1 === req.body.Gamertag) {
-                return res.status(200).json(jugadorEnPartida.Movimientos2);
-            } else {
-                return res.status(200).json(jugadorEnPartida.Movimientos1);
-            }
-        }
-    } else {
+    if (!jugadorEnPartida) {
         return res.status(404).json({ error: 'Jugador no encontrado en la partida' });
     }
+
+    // Nueva validación para Movimientos1 y Movimientos2
+    if (jugadorEnPartida.Movimientos1.length > 0 && jugadorEnPartida.Movimientos2.length > 0) {
+        if (jugadorEnPartida.Consultado1 === 0 || jugadorEnPartida.Consultado2 === 0) {
+            if (jugadorEnPartida.Jugador1 === req.body.Gamertag) {
+                jugadorEnPartida.Consultado2 = 1;
+                fs.writeFileSync(partidaJSONPath, JSON.stringify(archivoPartida, null, 2));
+                return res.status(200).json(jugadorEnPartida.Movimientos2);
+            } else {
+                jugadorEnPartida.Consultado1 = 1;
+                fs.writeFileSync(partidaJSONPath, JSON.stringify(archivoPartida, null, 2));
+                return res.status(200).json(jugadorEnPartida.Movimientos1);
+            }
+        } else {
+            jugadorEnPartida.Movimientos1 = [];
+            jugadorEnPartida.MovimientosRegistrados1 = 0;
+            jugadorEnPartida.Consultado1 = 0;
+            jugadorEnPartida.Movimientos2 = [];
+            jugadorEnPartida.MovimientosRegistrados2 = 0;
+            jugadorEnPartida.Consultado2 = 0;
+            jugadorEnPartida.Turno = (parseInt(jugadorEnPartida.Turno) + 1).toString();
+        }
+    }       
+
+    if (jugadorEnPartida.Jugador1 === req.body.Gamertag) {
+        // Validar si ya existe un movimiento del Jugador1
+        if (jugadorEnPartida.MovimientosRegistrados1 === 1) {
+            return res.status(400).json({ error: 'Ya se jugó un movimiento para Jugador1 en este turno.' });
+        } else {
+            jugadorEnPartida.Movimientos1 = Movimientos;
+            jugadorEnPartida.MovimientosRegistrados1 = 1;
+        }
+    } else {
+        // Validar si ya existe un movimiento del Jugador2
+        if (jugadorEnPartida.MovimientosRegistrados2 === 1) {
+            return res.status(400).json({ error: 'Ya se jugó un movimiento para Jugador2 en este turno.' });
+        } else {
+            jugadorEnPartida.Movimientos2 = Movimientos;
+            jugadorEnPartida.MovimientosRegistrados2 = 1;
+        }
+    }
+
+    fs.writeFileSync(partidaJSONPath, JSON.stringify(archivoPartida, null, 2));
+    return res.status(200).json({ mensaje: 'Turno Jugado' });
 });
+
 
 module.exports = router;
