@@ -14,8 +14,6 @@ function recuperarCartas(callback) {
             Poder: resultado.Poder,
             Imagen: resultado.Imagen ? resultado.Imagen.toString('base64') : null,
         }));
-
-        console.log(cartas[1].Imagen);
         callback(null, cartas);
     });
 }

@@ -2,6 +2,7 @@ const { Router } = require('express');
 const router = Router();
 const fs = require('fs');
 const bodyParser = require('body-parser');
+const PartidaDAO = require('../DAOs/PartidaDAO');
 
 const path = require('path');
 const matchmakingJSONPath = path.join(__dirname, '../data/matchmaking.json');
@@ -73,9 +74,18 @@ router.post('/solicitarpartida', (req, res) => {
                 res.status(500).send('Error al leer el archivo JSON.');
                 return;
             }
+
+            const numPartidasGuardadas = 0;
+            PartidaDAO.recuperarNumPartidas((err, numPartidas) => {
+                if (err) {
+                    return res.status(500).send('Error al escribir los archivos JSON');
+                } else {
+                    numPartidasGuardadas = numPartidas;
+                }
+            });
     
             let contenidoPartida = {
-                "idPartida": archivoPartida.length > 0 ? archivoPartida.length + 1 : 1,
+                "idPartida": numPartidasGuardadas + 1,
                 "Jugador1": archivoMatchmaking[0].Gamertag,
                 "Movimientos1": [],
                 "MovimientosRegistrados1": 0,
@@ -86,6 +96,12 @@ router.post('/solicitarpartida', (req, res) => {
                 "Consultado2": 0,
                 "Turno": "1"
             }
+
+            PartidaDAO.guardarPartida(archivoMatchmaking[0].Gamertag, archivoMatchmaking[1].Gamertag, (err, cartas) => {
+                if (err) {
+                    res.status(500).send('Error al escribir los archivos JSON');
+                }
+            });
     
             try {
                 archivoPartida.push(contenidoPartida);
@@ -96,6 +112,29 @@ router.post('/solicitarpartida', (req, res) => {
                 res.status(500).send('Error al escribir los archivos JSON');
             }
         }
+    }
+});
+
+router.post('/cancelarpartida', (req, res) => {
+    let archivoPartida = [];
+
+    try {
+        archivoPartida = require(partidaJSONPath);
+    } catch (error) {
+        console.error('Error al leer el archivo JSON: ', error);
+        return res.status(500).send('Error al leer el archivo JSON.');
+    }
+
+    const indexJugadorEnPartida = archivoPartida.findIndex(jugador => jugador.Gamertag === req.body.Gamertag);
+
+    if (indexJugadorEnPartida !== -1) {
+        archivoPartida.splice(indexJugadorEnPartida, 1);
+
+        fs.writeFileSync(partidaJSONPath, JSON.stringify(archivoPartida, null, 2));
+
+        return res.status(200).json({ mensaje: 'Jugador eliminado correctamente' });
+    } else {
+        return res.status(404).json({ error: 'Jugador no encontrado en la partida' });
     }
 });
 
@@ -133,13 +172,26 @@ router.post('/jugarturno', (req, res) => {
                 return res.status(200).json(jugadorEnPartida.Movimientos1);
             }
         } else {
-            jugadorEnPartida.Movimientos1 = [];
-            jugadorEnPartida.MovimientosRegistrados1 = 0;
-            jugadorEnPartida.Consultado1 = 0;
-            jugadorEnPartida.Movimientos2 = [];
-            jugadorEnPartida.MovimientosRegistrados2 = 0;
-            jugadorEnPartida.Consultado2 = 0;
-            jugadorEnPartida.Turno = (parseInt(jugadorEnPartida.Turno) + 1).toString();
+                PartidaDAO.guardarTurno(jugadorEnPartida.Movimientos1, jugadorEnPartida.Movimientos2, jugadorEnPartida.Turno, jugadorEnPartida.idPartida, (err, resultado) => {
+                    if (err) {
+                        return res.status(500).send('Error al escribir los archivos JSON');
+                    } else {
+                        console.log('Turno Guardado');
+                    }
+                });
+
+            if (parseInt(jugadorEnPartida.Turno) === 4) {
+                fs.writeFileSync(partidaJSONPath, JSON.stringify([], null, 2));
+                return res.status(200).json({ mensaje: 'Juego terminado.' });
+            } else {
+                jugadorEnPartida.Movimientos1 = [];
+                jugadorEnPartida.MovimientosRegistrados1 = 0;
+                jugadorEnPartida.Consultado1 = 0;
+                jugadorEnPartida.Movimientos2 = [];
+                jugadorEnPartida.MovimientosRegistrados2 = 0;
+                jugadorEnPartida.Consultado2 = 0;
+                jugadorEnPartida.Turno = (parseInt(jugadorEnPartida.Turno) + 1).toString();
+            }
         }
     }       
 

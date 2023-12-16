@@ -2,7 +2,7 @@ const { Router } = require('express');
 const router = Router();
 const CartasDAO = require('../DAOs/CartasDAO');
 
-router.get('/recuperarCartas', (req, res) => {
+router.get('/recuperarcartas', (req, res) => {
 
     CartasDAO.recuperarCartas((err, cartas) => {
         if (err) {
