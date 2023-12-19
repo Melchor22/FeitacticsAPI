@@ -65,38 +65,49 @@ router.get('/recuperarImagenesPerfil', (req, res) => {
 router.post('/registrarjugador', (req, res) => {
     console.log(req.body);
 
-    const {Gamertag, contrasenia, idFoto} = req.body;
+    const {gamertag, password, idFoto} = req.body;
+    console.log(gamertag);
+    console.log(password);
+    console.log(idFoto);
     
-    JugadoresDAO.registrarJugador(Gamertag, contrasenia, idFoto, (err, resultadoJugador) => {
+    JugadoresDAO.registrarJugador(gamertag, password, idFoto, (err, resultadoJugador) => {
         if (err) {
-            res.status(500).json({ error: 'Error al registrar el jugador' });
+            res.status(500).json({ error: 'Error al registrar el jugador 1' });
         } else {
             if (resultadoJugador.affectedRows > 0) {
+
                 CartasDAO.recuperarCartas((err, cartas) => {
                     if (err) {
                         res.status(500).json({ error: 'Error al recuperar las cartas' });
                     } else {
                         if (cartas) {
+                            console.log(cartas);
                             cartas.forEach(carta => {
-                                JugadoresDAO.desbloquearCarta(Gamertag, carta.idCarta, (err, resultadoCartas) => {
+                                console.log(carta);
+                                console.log(carta.IDCarta);
+                                
+                                JugadoresDAO.desbloquearCarta(gamertag, carta.IDCarta, (err, resultadoCartas) => {
                                     if (err) {
-                                        res.status(500).json({ error: 'Error al registrar el jugador' });
+                                        res.status(500).json({ error: 'Error al registrar el jugador 2' });
                                     } else {
                                         if (resultadoCartas.affectedRows > 0) {
                                             console.log('Carta:');
-                                            console.log(carta.idCarta);
+                                            console.log(carta);
                                         } else {
                                             res.status(404).json({ mensaje: 'No se pudo desbloquear las cartas' });
                                         }
                                     }
                                 });
+                                
                             });
+
                         } else {
                             res.status(404).json({mensaje: 'No se encontraron cartas'});
                         }
 
                     }
                 });
+
                 res.status(200).json({ mensaje: "Jugador Registrado" });
             } else {
                 res.status(404).json({ mensaje: 'No se pudo registrar al Jugador' });

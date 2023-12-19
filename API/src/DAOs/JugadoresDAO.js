@@ -65,9 +65,9 @@ function registrarJugador(gamertag, contrasenia, idFoto, callback) {
     console.log(gamertag);
     console.log(contrasenia);
     console.log(idFoto);
-    const consulta = `INSERT INTO jugadores (Gamertag, contrasenia, IDFoto) 
-                      VALUES (?, ?, ?)`;
-    const valores = [gamertag, contrasenia, idFoto];
+    const consulta = `INSERT INTO jugadores (Gamertag, contrasenia, IDFoto, PartidasGanadas, PartidasPerdidas, Mazo) 
+                      VALUES (?, ?, ?, ?, ?, ?)`;
+    const valores = [gamertag, contrasenia, idFoto, 0, 0, "9,10,11,12"];
 
     conexion.query(consulta, valores, (err, resultado) => {
         if (err) {
