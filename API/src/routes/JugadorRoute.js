@@ -27,7 +27,7 @@ router.post('/iniciarsesion', (req, res) => {
     });
 });
 
-router.get('/imagenPerfilSesion', (req, res) => {
+router.get('/imagenperfilesion', (req, res) => {
     console.log('Petición:');
     console.log(req.body);
 
@@ -48,7 +48,7 @@ router.get('/imagenPerfilSesion', (req, res) => {
     });
 });
 
-router.get('/recuperarImagenesPerfil', (req, res) => {
+router.get('/recuperarfotosperfil', (req, res) => {
     JugadoresDAO.recuperarImagenesPerfil((err, imagenesPerfil) => {
         if (err) {
             res.status(500).json({error: 'Error al obtener las cartas'});
