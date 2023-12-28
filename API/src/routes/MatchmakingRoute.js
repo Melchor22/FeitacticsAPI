@@ -15,9 +15,10 @@ router.post('/solicitarpartida', (req, res) => {
 
     try {
         archivoMatchmaking = require(matchmakingJSONPath);
+        console.log(archivoMatchmaking);
     } catch (error) {
         console.error('Error al leer el archivo JSON: ', error);
-        res.status(500).send('Error al leer el archivo JSON.');
+        res.status(500).send({"Respuesta": "Error al leer el archivo JSON."});
         return;
     }
 
@@ -26,7 +27,7 @@ router.post('/solicitarpartida', (req, res) => {
         console.log(archivoPartida);
     } catch (error) {
         console.error('Error al leer el archivo JSON: ', error);
-        res.status(500).send('Error al leer el archivo JSON.');
+        res.status(500).send({"Respuesta": "Error al leer el archivo JSON."});
         return;
     }
 
@@ -43,7 +44,7 @@ router.post('/solicitarpartida', (req, res) => {
         } else if (req.body.Gamertag === jugadorEnPartida.Jugador2) {
             res.status(400).send({"Gamertag": jugadorEnPartida.Jugador1});
         } else {
-            res.status(404).send("No encontrado");
+            res.status(404).send({"Respuesta": "No encontrado"});
         }
     } else {
         console.log('Archivo vacío');
@@ -53,14 +54,14 @@ router.post('/solicitarpartida', (req, res) => {
             const existeRegistro = archivoMatchmaking.some(jugador => jugador.Gamertag === req.body.Gamertag);
     
             if (existeRegistro) {
-                res.status(400).send('Ya se solicitó la partida.');
+                res.status(400).send({"Respuesta": "Ya se solicitó la partida"});
             } else {
                 archivoMatchmaking.push(req.body);
                 try {
+                    res.status(200).send({"Respuesta": "Solicitud Guardada"});
                     fs.writeFileSync(matchmakingJSONPath, JSON.stringify(archivoMatchmaking, null, 2));
-                    res.status(200).send('Solicitud Guardada.');
                 } catch (error) {
-                    res.status(500).send('Error al escribir el archivo JSON.');
+                    res.status(500).send({"Respuesta": "Error al escribir el archivo JSON."});
                 }
             }
         } else {
@@ -71,14 +72,14 @@ router.post('/solicitarpartida', (req, res) => {
                 archivoPartida = require(partidaJSONPath);
             } catch (error) {
                 console.error('Error al leer el archivo JSON: ', error);
-                res.status(500).send('Error al leer el archivo JSON.');
+                res.status(500).send({"Respuesta": "Error al leer el archivo JSON."});
                 return;
             }
 
             const numPartidasGuardadas = 0;
             PartidaDAO.recuperarNumPartidas((err, numPartidas) => {
                 if (err) {
-                    return res.status(500).send('Error al escribir los archivos JSON');
+                    return res.status(500).send({"Respuesta" : "Error al escribir los archivos JSON"});
                 } else {
                     numPartidasGuardadas = numPartidas;
                 }
@@ -99,7 +100,7 @@ router.post('/solicitarpartida', (req, res) => {
 
             PartidaDAO.guardarPartida(archivoMatchmaking[0].Gamertag, archivoMatchmaking[1].Gamertag, (err, cartas) => {
                 if (err) {
-                    res.status(500).send('Error al escribir los archivos JSON');
+                    res.status(500).send({"Respuesta" : "Error al escribir los archivos JSON"});
                 }
             });
     
@@ -109,7 +110,7 @@ router.post('/solicitarpartida', (req, res) => {
                 fs.writeFileSync(matchmakingJSONPath, '[]', null, 2);
                 res.status(200).send('Partida Creada');
             } catch (error) {
-                res.status(500).send('Error al escribir los archivos JSON');
+                res.status(500).send({"Respuesta" : "Error al escribir los archivos JSON"});
             }
         }
     }
