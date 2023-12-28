@@ -40,11 +40,11 @@ router.post('/solicitarpartida', (req, res) => {
         );
 
         if (req.body.Gamertag === jugadorEnPartida.Jugador1) {
-            res.status(400).send({"Gamertag": jugadorEnPartida.Jugador2});
+            res.status(200).send({"Gamertag": jugadorEnPartida.Jugador2});
         } else if (req.body.Gamertag === jugadorEnPartida.Jugador2) {
-            res.status(400).send({"Gamertag": jugadorEnPartida.Jugador1});
+            res.status(200).send({"Gamertag": jugadorEnPartida.Jugador1});
         } else {
-            res.status(404).send({"Respuesta": "No encontrado"});
+            res.status(200).send({"Respuesta": "No encontrado"});
         }
     } else {
         console.log('Archivo vacío');
@@ -54,7 +54,7 @@ router.post('/solicitarpartida', (req, res) => {
             const existeRegistro = archivoMatchmaking.some(jugador => jugador.Gamertag === req.body.Gamertag);
     
             if (existeRegistro) {
-                res.status(400).send({"Respuesta": "Ya se solicitó la partida"});
+                res.status(200).send({"Respuesta": "Ya se solicitó la partida"});
             } else {
                 archivoMatchmaking.push(req.body);
                 try {
@@ -108,7 +108,7 @@ router.post('/solicitarpartida', (req, res) => {
                 archivoPartida.push(contenidoPartida);
                 fs.writeFileSync(partidaJSONPath, JSON.stringify(archivoPartida, null, 2));
                 fs.writeFileSync(matchmakingJSONPath, '[]', null, 2);
-                res.status(200).send('Partida Creada');
+                res.status(200).send({"Respuesta": "Partida Creada"});
             } catch (error) {
                 res.status(500).send({"Respuesta" : "Error al escribir los archivos JSON"});
             }
@@ -123,7 +123,7 @@ router.post('/cancelarpartida', (req, res) => {
         archivoPartida = require(partidaJSONPath);
     } catch (error) {
         console.error('Error al leer el archivo JSON: ', error);
-        return res.status(500).send('Error al leer el archivo JSON.');
+        return res.status(500).send({"Respuesta": "Error al leer el archivo JSON"});
     }
 
     const indexJugadorEnPartida = archivoPartida.findIndex(jugador => jugador.Gamertag === req.body.Gamertag);
@@ -133,9 +133,9 @@ router.post('/cancelarpartida', (req, res) => {
 
         fs.writeFileSync(partidaJSONPath, JSON.stringify(archivoPartida, null, 2));
 
-        return res.status(200).json({ mensaje: 'Jugador eliminado correctamente' });
+        return res.status(200).json({ "Respuesta": "Jugador eliminado correctamente" });
     } else {
-        return res.status(404).json({ error: 'Jugador no encontrado en la partida' });
+        return res.status(200).json({ "Respuesta": "Jugador no encontrado en la partida" });
     }
 });
 
@@ -146,7 +146,7 @@ router.post('/jugarturno', (req, res) => {
         archivoPartida = require(partidaJSONPath);
     } catch (error) {
         console.error('Error al leer el archivo JSON: ', error);
-        res.status(500).send('Error al leer el archivo JSON.');
+        res.status(500).send({"Respuesta": "Error al leer el archivo JSON"});
         return;
     }
 
@@ -157,7 +157,7 @@ router.post('/jugarturno', (req, res) => {
     console.log(jugadorEnPartida);
 
     if (!jugadorEnPartida) {
-        return res.status(404).json({ error: 'Jugador no encontrado en la partida' });
+        return res.status(200).json({ "Respuesta": "Jugador no encontrado en la partida" });
     }
 
     // Nueva validación para Movimientos1 y Movimientos2
@@ -175,7 +175,7 @@ router.post('/jugarturno', (req, res) => {
         } else {
                 PartidaDAO.guardarTurno(jugadorEnPartida.Movimientos1, jugadorEnPartida.Movimientos2, jugadorEnPartida.Turno, jugadorEnPartida.idPartida, (err, resultado) => {
                     if (err) {
-                        return res.status(500).send('Error al escribir los archivos JSON');
+                        return res.status(500).send({"Respuesta": "Error al escribir los archivos JSON"});
                     } else {
                         console.log('Turno Guardado');
                     }
@@ -183,7 +183,7 @@ router.post('/jugarturno', (req, res) => {
 
             if (parseInt(jugadorEnPartida.Turno) === 4) {
                 fs.writeFileSync(partidaJSONPath, JSON.stringify([], null, 2));
-                return res.status(200).json({ mensaje: 'Juego terminado.' });
+                return res.status(200).json({ "Respuesta": "Juego terminado" });
             } else {
                 jugadorEnPartida.Movimientos1 = [];
                 jugadorEnPartida.MovimientosRegistrados1 = 0;
@@ -199,7 +199,7 @@ router.post('/jugarturno', (req, res) => {
     if (jugadorEnPartida.Jugador1 === req.body.Gamertag) {
         // Validar si ya existe un movimiento del Jugador1
         if (jugadorEnPartida.MovimientosRegistrados1 === 1) {
-            return res.status(400).json({ error: 'Ya se jugó un movimiento para Jugador1 en este turno.' });
+            return res.status(200).json({ "Respuesta": "Ya se jugó un movimiento para Jugador1 en este turno" });
         } else {
             jugadorEnPartida.Movimientos1 = Movimientos;
             jugadorEnPartida.MovimientosRegistrados1 = 1;
@@ -207,7 +207,7 @@ router.post('/jugarturno', (req, res) => {
     } else {
         // Validar si ya existe un movimiento del Jugador2
         if (jugadorEnPartida.MovimientosRegistrados2 === 1) {
-            return res.status(400).json({ error: 'Ya se jugó un movimiento para Jugador2 en este turno.' });
+            return res.status(200).json({ "Respuesta": "Ya se jugó un movimiento para Jugador2 en este turno" });
         } else {
             jugadorEnPartida.Movimientos2 = Movimientos;
             jugadorEnPartida.MovimientosRegistrados2 = 1;
@@ -215,7 +215,7 @@ router.post('/jugarturno', (req, res) => {
     }
 
     fs.writeFileSync(partidaJSONPath, JSON.stringify(archivoPartida, null, 2));
-    return res.status(200).json({ mensaje: 'Turno Jugado' });
+    return res.status(200).json({ "Respuesta": "Turno Jugado" });
 });
 
 
