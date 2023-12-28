@@ -41,7 +41,6 @@ function recuperarImagenesPerfil(callback) {
             Foto: resultado.Foto ? resultado.Foto.toString('base64') : null
         }));
 
-        console.log(imagenesPerfil[0].Foto);
         callback(null, imagenesPerfil);
     });
 }

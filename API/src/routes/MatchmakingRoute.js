@@ -116,7 +116,7 @@ router.post('/solicitarpartida', (req, res) => {
     }
 });
 
-router.delete('/cancelarbusqueda', (req, res) => {
+router.patch('/cancelarbusqueda', (req, res) => {
     let archivoMatchmaking = [];
 
     try {
@@ -137,7 +137,7 @@ router.delete('/cancelarbusqueda', (req, res) => {
     }
 });
 
-router.post('/cancelarpartida', (req, res) => {
+router.patch('/cancelarpartida', (req, res) => {
     let archivoPartida = [];
 
     try {
