@@ -116,6 +116,27 @@ router.post('/solicitarpartida', (req, res) => {
     }
 });
 
+router.delete('/cancelarbusqueda', (req, res) => {
+    let archivoMatchmaking = [];
+
+    try {
+        archivoMatchmaking = require(matchmakingJSONPath);
+    } catch (error) {
+        console.error('Error al leer el archivo JSON: ', error);
+        return res.status(500).send({"Respuesta": "Error al leer el archivo JSON"});
+    }
+
+    const intdexJugadorEnEspera = archivoMatchmaking.findIndex(jugador => jugador.Gamertag === req.body.Gamertag);
+
+    if (intdexJugadorEnEspera !== -1) {
+        archivoMatchmaking.splice(intdexJugadorEnEspera, 1);
+        fs.writeFileSync(matchmakingJSONPath, JSON.stringify(archivoMatchmaking, null, 2));
+        return res.status(200).json({ "Respuesta": "Jugador eliminado correctamente" }); 
+    } else {
+        return res.status(200).json({ "Respuesta": "Jugador no encontrado en la partida" });
+    }
+});
+
 router.post('/cancelarpartida', (req, res) => {
     let archivoPartida = [];
 
