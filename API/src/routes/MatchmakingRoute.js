@@ -75,19 +75,9 @@ router.post('/solicitarpartida', (req, res) => {
                 res.status(500).send({"Respuesta": "Error al leer el archivo JSON."});
                 return;
             }
-
-            var numPartidasJugadas;
-
-            PartidaDAO.recuperarNumPartidas((err, numPartidas) => {
-                if (err) {
-                    return res.status(500).send({"Respuesta" : "Error al escribir los archivos JSON"});
-                } else {
-                    numPartidasJugadas = numPartidas + 1;
-                }
-            });
     
             let contenidoPartida = {
-                "idPartida": numPartidasJugadas,
+                "idPartida": 1,
                 "Jugador1": archivoMatchmaking[0].Gamertag,
                 "Movimientos1": [],
                 "MovimientosRegistrados1": 0,

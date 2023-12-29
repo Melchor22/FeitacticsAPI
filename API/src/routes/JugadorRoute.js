@@ -27,6 +27,24 @@ router.post('/iniciarsesion', (req, res) => {
     });
 });
 
+router.post('/recuperaroponente', (req, res) => {
+    console.log(req.body);
+    const { Gamertag } = req.body;
+    JugadoresDAO.recuperarOponente(Gamertag, (err, jugador) => {
+        if (err) {
+            res.status(500).json({error: 'Error al obtener al oponente'});
+        } else {
+            if (jugador) {
+                console.log('Jugador Obtenido: ');
+                console.log(jugador);
+                res.status(200).json(jugador);
+            } else {
+                res.status(404).json({ mensaje: 'No se encontró al jugador oponente' });
+            }
+        }
+    });
+})
+
 router.get('/imagenperfilesion', (req, res) => {
     console.log('Petición:');
     console.log(req.body);
@@ -143,24 +161,6 @@ router.put('/modificarmazo', (req, res) => {
                 res.status(200).json({ mensaje: 'Mazo modificado correctamente' });
             } else {
                 res.status(404).json({ mensaje: 'No se pudo modificar el Mazo' });
-            }
-        }
-    });
-})
-
-router.get('/recuperaroponente', (req, res) => {
-    console.log(req.body);
-    const { Gamertag } = req.body;
-    JugadoresDAO.recuperarOponente(Gamertag, (err, jugador) => {
-        if (err) {
-            res.status(500).json({error: 'Error al obtener al oponente'});
-        } else {
-            if (jugador) {
-                console.log('Jugador Obtenido: ');
-                console.log(jugador);
-                res.status(200).json(jugador);
-            } else {
-                res.status(404).json({ mensaje: 'No se encontró al jugador oponente' });
             }
         }
     });

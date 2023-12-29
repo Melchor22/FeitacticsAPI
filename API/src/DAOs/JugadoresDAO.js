@@ -14,6 +14,21 @@ function iniciarSesion(gamertagInicio, contraseniaInicio, callback) {
     });
 }
 
+function recuperarOponente(gamertag, callback) {
+    console.log(gamertag);
+    const consulta = `SELECT * FROM jugadores WHERE Gamertag = ?`
+    const valores = [gamertag]
+
+    conexion.query(consulta, valores, (err, resultado) => {
+        if (err) {
+            callback(err, null);
+        } else {
+            const jugadorEncontrado = resultado.length  > 0 ? resultado[0] : null;
+            callback(null, jugadorEncontrado);
+        }
+    });
+}
+
 function recuperarImagenPerfil(idFoto, callback) {
     const consulta = 'SELECT * FROM fotosperfil WHERE BINARY idFoto = ?';
     const valores = [idFoto];
@@ -98,20 +113,6 @@ function desbloquearCarta(gamertag, idCarta, callback) {
     const consulta = `INSERT INTO jugadorescartas (Gamertag, IDCarta, Usos) 
     VALUES (?, ?, ?)`
     const valores = [gamertag, idCarta, 0]
-
-    conexion.query(consulta, valores, (err, resultado) => {
-        if (err) {
-            callback(err, null);
-        } else {
-            callback(null, resultado);
-        }
-    });
-}
-
-function recuperarOponente(gamertag, callback) {
-    console.log(gamertag);
-    const consulta = `SELECT * FROM jugadores WHERE Gamertag = ?`
-    const valores = [gamertag]
 
     conexion.query(consulta, valores, (err, resultado) => {
         if (err) {
