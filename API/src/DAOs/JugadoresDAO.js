@@ -108,6 +108,20 @@ function desbloquearCarta(gamertag, idCarta, callback) {
     });
 }
 
+function recuperarOponente(gamertag, callback) {
+    console.log(gamertag);
+    const consulta = `SELECT * FROM jugadores WHERE Gamertag = ?`
+    const valores = [gamertag]
+
+    conexion.query(consulta, valores, (err, resultado) => {
+        if (err) {
+            callback(err, null);
+        } else {
+            callback(null, resultado);
+        }
+    });
+}
+
 function cerrarConexion() {
     conexion.end(err => {
         if (err) {
@@ -126,5 +140,6 @@ module.exports = {
     recuperarImagenesPerfil,
     modificarImagenPerfil,
     modificarMazo,
-    cerrarConexion
+    cerrarConexion,
+    recuperarOponente
 };

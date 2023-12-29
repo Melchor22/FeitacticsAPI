@@ -76,17 +76,18 @@ router.post('/solicitarpartida', (req, res) => {
                 return;
             }
 
-            const numPartidasGuardadas = 0;
+            var numPartidasJugadas;
+
             PartidaDAO.recuperarNumPartidas((err, numPartidas) => {
                 if (err) {
                     return res.status(500).send({"Respuesta" : "Error al escribir los archivos JSON"});
                 } else {
-                    numPartidasGuardadas = numPartidas;
+                    numPartidasJugadas = numPartidas + 1;
                 }
             });
     
             let contenidoPartida = {
-                "idPartida": numPartidasGuardadas + 1,
+                "idPartida": numPartidasJugadas,
                 "Jugador1": archivoMatchmaking[0].Gamertag,
                 "Movimientos1": [],
                 "MovimientosRegistrados1": 0,
@@ -147,14 +148,12 @@ router.patch('/cancelarpartida', (req, res) => {
         return res.status(500).send({"Respuesta": "Error al leer el archivo JSON"});
     }
 
-    const indexJugadorEnPartida = archivoPartida.findIndex(jugador => jugador.Gamertag === req.body.Gamertag);
+    const jugadorEnPartida = archivoPartida.find(jugador => jugador.Jugador1 === req.body.Gamertag || jugador.Jugador2 === req.body.Gamertag);
 
-    if (indexJugadorEnPartida !== -1) {
-        archivoPartida.splice(indexJugadorEnPartida, 1);
+    if (jugadorEnPartida) {
+        fs.writeFileSync(partidaJSONPath, JSON.stringify([], null, 2));
 
-        fs.writeFileSync(partidaJSONPath, JSON.stringify(archivoPartida, null, 2));
-
-        return res.status(200).json({ "Respuesta": "Jugador eliminado correctamente" });
+        return res.status(200).json({ "Respuesta": "Partida cancelada correctamente" });
     } else {
         return res.status(200).json({ "Respuesta": "Jugador no encontrado en la partida" });
     }

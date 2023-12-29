@@ -148,4 +148,22 @@ router.put('/modificarmazo', (req, res) => {
     });
 })
 
+router.get('/recuperaroponente', (req, res) => {
+    console.log(req.body);
+    const { Gamertag } = req.body;
+    JugadoresDAO.recuperarOponente(Gamertag, (err, jugador) => {
+        if (err) {
+            res.status(500).json({error: 'Error al obtener al oponente'});
+        } else {
+            if (jugador) {
+                console.log('Jugador Obtenido: ');
+                console.log(jugador);
+                res.status(200).json(jugador);
+            } else {
+                res.status(404).json({ mensaje: 'No se encontró al jugador oponente' });
+            }
+        }
+    });
+})
+
 module.exports = router;

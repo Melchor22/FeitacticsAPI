@@ -12,7 +12,7 @@ function recuperarNumPartidas(callback) {
             return callback(err, null);
         } else {
             const numPartidas = resultados;
-            callback(null, res)
+            callback(null, resultados)
         }
     });
 }

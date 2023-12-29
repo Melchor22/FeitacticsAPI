@@ -15,6 +15,7 @@ app.use(express.json());
 app.use('/jugador', require('./routes/JugadorRoute'));
 app.use('/carta', require('./routes/CartaRoute'));
 app.use('/matchmaking', require('./routes/MatchmakingRoute'));
+app.use('/escenario', require('./routes/EscenarioRoute'))
 
 //starting server
 app.listen(app.get('port'), () => {
