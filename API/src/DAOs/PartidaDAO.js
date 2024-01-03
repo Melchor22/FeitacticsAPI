@@ -35,7 +35,7 @@ function guardarTurno(movimientos1, movimientos2, turno, idPartida, callback) {
     const valores = [movimientos1, movimientos2, turno, idPartida];
 
     conexion.query(consulta, valores, (err, resultado) => {
-        if (ERR) {
+        if (err) {
             callback(err, null);
         } else {
             callback(null, resultado);

@@ -89,11 +89,13 @@ router.post('/solicitarpartida', (req, res) => {
                 "Turno": "1"
             }
 
-            PartidaDAO.guardarPartida(archivoMatchmaking[0].Gamertag, archivoMatchmaking[1].Gamertag, (err, cartas) => {
-                if (err) {
-                    res.status(500).send({"Respuesta" : "Error al escribir los archivos JSON"});
-                }
-            });
+            if (req.body.Gamertag !== 'guest' || archivoMatchmaking[0].Gamertag !== 'guest' || archivoMatchmaking[1].Gamertag !== 'guest') {
+                PartidaDAO.guardarPartida(archivoMatchmaking[0].Gamertag, archivoMatchmaking[1].Gamertag, (err, cartas) => {
+                    if (err) {
+                        res.status(500).send({"Respuesta" : "Error al escribir los archivos JSON"});
+                    }
+                });
+            }
     
             try {
                 archivoPartida.push(contenidoPartida);
@@ -176,13 +178,32 @@ router.post('/jugarturno', (req, res) => {
             if (jugadorEnPartida.Jugador1 === req.body.Gamertag) {
                 jugadorEnPartida.Consultado2 = 1;
                 fs.writeFileSync(partidaJSONPath, JSON.stringify(archivoPartida, null, 2));
-                return res.status(200).json(jugadorEnPartida.Movimientos2);
+                const movimientosJugador = {
+                    Movimientos: jugadorEnPartida.Movimientos2.map(movimiento => {
+                        return {
+                            Escenario: movimiento.Escenario,
+                            Carta: movimiento.Carta
+                        };
+                    })
+                };
+                return res.status(200).json(movimientosJugador);
             } else {
                 jugadorEnPartida.Consultado1 = 1;
                 fs.writeFileSync(partidaJSONPath, JSON.stringify(archivoPartida, null, 2));
-                return res.status(200).json(jugadorEnPartida.Movimientos1);
+                const movimientosJugador = {
+                    Movimientos: jugadorEnPartida.Movimientos1.map(movimiento => {
+                        return {
+                            Escenario: movimiento.Escenario,
+                            Carta: movimiento.Carta
+                        };
+                    })
+                };
+                return res.status(200).json(movimientosJugador);
             }
         } else {
+
+            if (jugadorEnPartida.Jugador1 !== 'guest' || jugadorEnPartida.Jugador2 !== 'guest') {
+
                 PartidaDAO.guardarTurno(jugadorEnPartida.Movimientos1, jugadorEnPartida.Movimientos2, jugadorEnPartida.Turno, jugadorEnPartida.idPartida, (err, resultado) => {
                     if (err) {
                         return res.status(500).send({"Respuesta": "Error al escribir los archivos JSON"});
@@ -190,6 +211,7 @@ router.post('/jugarturno', (req, res) => {
                         console.log('Turno Guardado');
                     }
                 });
+            }
 
             if (parseInt(jugadorEnPartida.Turno) === 4) {
                 fs.writeFileSync(partidaJSONPath, JSON.stringify([], null, 2));
@@ -209,7 +231,7 @@ router.post('/jugarturno', (req, res) => {
     if (jugadorEnPartida.Jugador1 === req.body.Gamertag) {
         // Validar si ya existe un movimiento del Jugador1
         if (jugadorEnPartida.MovimientosRegistrados1 === 1) {
-            return res.status(200).json({ "Respuesta": "Ya se jugó un movimiento para Jugador1 en este turno" });
+            return res.status(200).json({ "Respuesta": "Ya se jugó un movimiento para Jugador en este turno" });
         } else {
             jugadorEnPartida.Movimientos1 = Movimientos;
             jugadorEnPartida.MovimientosRegistrados1 = 1;
@@ -217,7 +239,7 @@ router.post('/jugarturno', (req, res) => {
     } else {
         // Validar si ya existe un movimiento del Jugador2
         if (jugadorEnPartida.MovimientosRegistrados2 === 1) {
-            return res.status(200).json({ "Respuesta": "Ya se jugó un movimiento para Jugador2 en este turno" });
+            return res.status(200).json({ "Respuesta": "Ya se jugó un movimiento para Jugador en este turno" });
         } else {
             jugadorEnPartida.Movimientos2 = Movimientos;
             jugadorEnPartida.MovimientosRegistrados2 = 1;
