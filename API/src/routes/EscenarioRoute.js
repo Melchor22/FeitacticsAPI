@@ -10,7 +10,7 @@ router.get('/recuperarescenarios', (req, res) => {
             if (escenarios) {
                 res.status(200).json({escenarios});
             } else {
-                res.status(404).json({mensaje: 'No se encontraron imagenes de perfil'});
+                res.status(404).json({mensaje: 'No se encontraron escenarios'});
             }
         }
     });

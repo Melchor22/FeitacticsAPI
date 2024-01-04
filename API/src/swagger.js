@@ -1,27 +1,18 @@
-const express = require('express');
-const swaggerJSDoc = require('swagger-jsdoc');
+const fs = require('fs');
 const swaggerUi = require('swagger-ui-express');
 
-const app = express();
-const morgan = require('morgan');
+// Ruta al archivo OpenAPI JSON
+const openapiSpecPath = 'C:/Users/marqu/OneDrive/Documentos/UV/7° Semestre/Desarrollo de Red/Código/API/src/Documentation/AWLOWREACH-FeitacticsAPI-1.0.0-resolved (1).json';
 
-
-const options = {
-  definition: {
-    openapi: '3.0.0',
-    info: { title: 'FeitacticsAPI', version: '1.0.0' },
-  },
-  apis: ['./routes/routes.js'], // Rutas a todos los archivos de rutas en la carpeta routes
-};
-
-const swaggerSpec = swaggerJSDoc(options);
+// Cargar la especificación OpenAPI desde el archivo
+const openapiSpec = JSON.parse(fs.readFileSync(openapiSpecPath, 'utf8'));
 
 // Función para configurar la documentación Swagger
 const SwaggerDocs = (app, port) => {
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openapiSpec));
   app.get('/api-docs.json', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
-    res.send(swaggerSpec);
+    res.send(openapiSpec);
   });
 
   console.log(`Swagger docs available at http://localhost:${port}/api-docs`);

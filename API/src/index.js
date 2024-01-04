@@ -2,14 +2,14 @@ const express = require('express');
 const app = express();
 const morgan = require('morgan');
 const {SwaggerDocs: V1SwaggerDocs} = require('./swagger')
-const routes = require('./routes/routes');
+const routes = require('./routes');
 
 //settings
 app.set('port', process.env.PORT || 3000);
 app.set('json spaces', 2);
 
 //middleware
-app.use(morgan('combined'));
+app.use(morgan('dev'));
 app.use(express.urlencoded({extended: false}));
 app.use(express.json());
 

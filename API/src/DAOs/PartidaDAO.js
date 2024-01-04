@@ -1,4 +1,5 @@
 const conexion = require('../conexion');
+const JugadorDAO = require('../DAOs/JugadoresDAO');
 
 const path = require('path');
 const matchmakingJSONPath = path.join(__dirname, '../data/matchmaking.json');
@@ -43,8 +44,51 @@ function guardarTurno(movimientos1, movimientos2, turno, idPartida, callback) {
     });
 }
 
+function guardarResultado(Gamertag, resultado, callback) {
+    JugadorDAO.recuperarOponente(Gamertag, (err, jugador) => {
+        if (err) {
+            callback(err, null);
+        } else {
+            var partidasGanadas = jugador.PartidasGanadas;
+            var partidasPerdidas = jugador.PartidasPerdidas;
+
+            console.log(Gamertag);
+            console.log(resultado);
+
+            if (resultado === 1) {
+                console.log("IF 1");
+                partidasGanadas = partidasGanadas + 1;
+                const consulta1 = 'UPDATE jugadores SET PartidasGanadas = ? WHERE Gamertag = ?';
+                const valores1 = [partidasGanadas, Gamertag];
+
+                conexion.query(consulta1, valores1, (err1, resultado1) => {
+                    if (err1) {
+                        callback(err1, null);
+                    } else {
+                        callback(null, resultado1);
+                    }
+                });
+            } else if (resultado === 0) {
+                console.log("If 2");
+                partidasPerdidas = partidasPerdidas + 1;
+                const consulta2 = 'UPDATE jugadores SET PartidasPerdidas = ? WHERE Gamertag = ?';
+                const valores2 = [partidasPerdidas, Gamertag];
+
+                conexion.query(consulta2, valores2, (err2, resultado2) => {
+                    if (err2) {
+                        callback(err2, null);
+                    } else {
+                        callback(null, resultado2);
+                    }
+                });
+            }
+        }
+    });
+}
+
 module.exports = {
     recuperarNumPartidas,
     guardarPartida,
-    guardarTurno
+    guardarTurno,
+    guardarResultado
 }

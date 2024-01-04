@@ -1,0 +1,1061 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Feitactics API",
+    "description": "API para comunicación en el Juego Feitactics",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://virtserver.swaggerhub.com/AWLOWREACH/FeitacticsAPI/1.0.0",
+      "description": "SwaggerHub API Auto Mocking"
+    },
+    {
+      "url": "https://mk2m8b3x-3000.usw3.devtunnels.ms/",
+      "description": "Server público"
+    }
+  ],
+  "paths": {
+    "/carta/recuperarcartas": {
+      "get": {
+        "tags": [
+          "Carta"
+        ],
+        "summary": "Recuperas las cartas",
+        "description": "Recuperas todas las cartas de la base de datos",
+        "responses": {
+          "200": {
+            "description": "Se recuperaron las cartas de forma exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Carta"
+                  }
+                },
+                "example": [
+                  {
+                    "IDCarta": 1,
+                    "Costo": 5,
+                    "Poder": 10,
+                    "Imagen": "/9j/4AAQSkZJRgA"
+                  },
+                  {
+                    "IDCarta": 2,
+                    "Costo": 3,
+                    "Poder": 8,
+                    "Imagen": "/wAARCAHOATQ"
+                  }
+                ]
+              }
+            }
+          },
+          "404": {
+            "description": "No se encontraron cartas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_500"
+                },
+                "example": {
+                  "error": "No se encontraron cartas"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error al obtener las cartas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_500"
+                },
+                "example": {
+                  "error": "Error al obtener las cartas"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/escenario/recuperarescenarios": {
+      "get": {
+        "tags": [
+          "Escenario"
+        ],
+        "summary": "Recuperas los escenarios",
+        "description": "Recuperas todos los escenarios de la base de datos",
+        "responses": {
+          "200": {
+            "description": "Se recuperaron los escenarios de forma exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Escenario"
+                  }
+                },
+                "example": [
+                  {
+                    "IDEscenario": 1,
+                    "Imagen": "/R8ldMK8av8AG/U8it8b9Twf4j"
+                  },
+                  {
+                    "IDEscenario": 2,
+                    "Imagen": "/R8ldMK8av8AG/U8it8b9Twf4j"
+                  }
+                ]
+              }
+            }
+          },
+          "404": {
+            "description": "No se encontraron escenarios",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_500"
+                },
+                "example": {
+                  "error": "No se encontraron escenarios"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error al obtener los escenarios",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_500"
+                },
+                "example": {
+                  "error": "Error al obtener los escenarios"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jugador/iniciarsesion": {
+      "post": {
+        "tags": [
+          "Jugador"
+        ],
+        "summary": "Recuperas el objeto jugador segun las credenciales",
+        "description": "Recuperas todos los datos que pertenecen al jugador que coincida con las credenciales proporcionadas",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SolicitudInicioSesion"
+              },
+              "example": {
+                "Gamertag": "JuanJuega",
+                "contrasenia": "12345"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Se inicia sesion correctamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Jugador"
+                  }
+                },
+                "example": {
+                  "Gamertag": "JuanJuega",
+                  "PartidasGanadas": 14,
+                  "PartidasPerdidas": 2,
+                  "Mazo": "9,10,11,12",
+                  "IDFoto": 6,
+                  "contrasenia": "12345"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No se encontró ningún jugador con las credenciales proporcionadas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_500"
+                },
+                "example": {
+                  "error": "No se encontró ningún jugador con las credenciales proporcionadas"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error al obtener el jugador",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_500"
+                },
+                "example": {
+                  "error": "Error al obtener el jugador"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jugador/recuperaroponente": {
+      "post": {
+        "tags": [
+          "Jugador"
+        ],
+        "summary": "Recuperas el objeto jugador segun el gamertag",
+        "description": "Recuperas todos los datos que pertenecen al jugador que coincida con el gamertag proporcionado",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              },
+              "example": "{\"Gamertag\":\"JuanJuega\"}"
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Se obtiene el objeto jugador correctamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Jugador"
+                  }
+                },
+                "example": {
+                  "Gamertag": "JuanJuega",
+                  "PartidasGanadas": 14,
+                  "PartidasPerdidas": 2,
+                  "Mazo": "9,10,11,12",
+                  "IDFoto": 6,
+                  "contrasenia": "12345"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No se encontró al jugador oponente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_500"
+                },
+                "example": {
+                  "error": "No se encontró al jugador oponente"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error al obtener al oponente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_500"
+                },
+                "example": {
+                  "error": "Error al obtener al oponente"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jugador/recuperarfotosperfil": {
+      "get": {
+        "tags": [
+          "Jugador"
+        ],
+        "summary": "Recuperas las fotos de perfil",
+        "description": "Recuperas todas las fotos de perfil de la base de datos",
+        "responses": {
+          "200": {
+            "description": "Se recuperaron las fotos de perfil de forma exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FotoPerfil"
+                  }
+                },
+                "example": [
+                  {
+                    "IDFoto": 1,
+                    "Imagen": "/9j/4AAQSkZJRgA"
+                  },
+                  {
+                    "IDFoto": 2,
+                    "Imagen": "/wAARCAHOATQ"
+                  }
+                ]
+              }
+            }
+          },
+          "404": {
+            "description": "No se encontraron imagenes de perfil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_500"
+                },
+                "example": {
+                  "error": "No se encontraron cartas"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error al obtener las fotos de perfil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_500"
+                },
+                "example": {
+                  "error": "Error al obtener las cartas"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jugador/registrarjugador": {
+      "post": {
+        "tags": [
+          "Jugador"
+        ],
+        "summary": "Registrar un jugador en la Base de Datos",
+        "description": "Registrar un jugador en la Base de Datos segun los datos proporcionados",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SolicitudRegistrarJugador"
+              },
+              "example": {
+                "gamertag": "JuanJuega",
+                "password": "12345",
+                "idFoto": 2
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Jugador Registrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_500"
+                },
+                "example": {
+                  "error": "Jugador Registrado"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No se pudo recuperar algun elemento necesario para el registro",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_500"
+                },
+                "examples": {
+                  "example1": {
+                    "value": {
+                      "mensaje": "No se pudo desbloquear las cartas"
+                    }
+                  },
+                  "example2": {
+                    "value": {
+                      "mensaje": "No se encontraron cartas"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error en el proceso del registro",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_500"
+                },
+                "examples": {
+                  "example1": {
+                    "value": {
+                      "error": "Error al registrar el jugador"
+                    }
+                  },
+                  "example2": {
+                    "value": {
+                      "error": "Error al recuperar las cartas"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jugador/modificarimagenperfil": {
+      "put": {
+        "tags": [
+          "Jugador"
+        ],
+        "summary": "Modificar la foto de perfil de un jugador",
+        "description": "Modificar la foto de perfil de un jugador en la base de datos segun los datos proporcionados",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SolicitudModificarImagenPerfil"
+              },
+              "example": {
+                "Gamertag": "Messi10",
+                "idFoto": 2
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Imagen de Perfil modificada correctamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_500"
+                },
+                "example": {
+                  "mensaje": "Imagen de Perfil modificada correctamente"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No se pudo modificar la Imagen de Perfil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_500"
+                },
+                "example": {
+                  "mensaje": "No se pudo modificar la Imagen de Perfil"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error al modificar la imagen de perfil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_500"
+                },
+                "example": {
+                  "error": "Error al modificar la imagen de perfil"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jugador/modificarmazo": {
+      "put": {
+        "tags": [
+          "Jugador"
+        ],
+        "summary": "Modificar el mazo de un jugador",
+        "description": "Modificar el mazo de un jugador en la base de datos segun los datos proporcionados",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SolicitudModificarMazo"
+              },
+              "example": {
+                "Gamertag": "Messi10",
+                "Mazo": "10,11,12,13"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Mazo modificado correctamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_500"
+                },
+                "example": {
+                  "mensaje": "Mazo modificado correctamente"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No se pudo modificar el Mazo",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_500"
+                },
+                "example": {
+                  "mensaje": "No se pudo modificar el Mazo"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error al modificar el mazo",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_500"
+                },
+                "example": {
+                  "error": "Error al modificar el mazo"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/matchmaking/solicitarpartida": {
+      "post": {
+        "tags": [
+          "Partida"
+        ],
+        "summary": "Solicitar la busqueda de una partida",
+        "description": "Guarda la solicitud con los datos proporcionados, vincula una partida con dos jugadores que hayna solicitado y regresa el nombre del oponente",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              },
+              "example": "{\"Gamertag\":\"JuanJuega\"}"
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Jugador Registrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_500"
+                },
+                "examples": {
+                  "example1": {
+                    "value": {
+                      "Gamertag": "Messi10"
+                    }
+                  },
+                  "example2": {
+                    "value": {
+                      "Respuesta": "No encontrado"
+                    }
+                  },
+                  "example3": {
+                    "value": {
+                      "Respuesta": "Ya se solicitó la partida"
+                    }
+                  },
+                  "example4": {
+                    "value": {
+                      "Respuesta": "Solicitud Guardada"
+                    }
+                  },
+                  "example5": {
+                    "value": {
+                      "Respuesta": "Partida Creada"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error en el proceso del registro",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_500"
+                },
+                "examples": {
+                  "example1": {
+                    "value": {
+                      "Respuesta": "Error al leer el archivo JSON."
+                    }
+                  },
+                  "example2": {
+                    "value": {
+                      "Respuesta": "Error al escribir el archivo JSON."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/matchmaking/cancelarbusqueda": {
+      "patch": {
+        "tags": [
+          "Partida"
+        ],
+        "summary": "Cancelar la busqueda de una partida",
+        "description": "Cancela la busqueda de la partida del usuario solicitante",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              },
+              "example": "{\"Gamertag\":\"JuanJuega\"}"
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "El proceso finalizó correctamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_500"
+                },
+                "examples": {
+                  "example1": {
+                    "value": {
+                      "Respuesta": "Jugador eliminado correctamente"
+                    }
+                  },
+                  "example2": {
+                    "value": {
+                      "Respuesta": "Jugador no encontrado en la partida"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error en el proceso del registro",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_500"
+                },
+                "example": {
+                  "Respuesta": "Error al leer el archivo JSON"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/matchmaking/cancelarpartida": {
+      "patch": {
+        "tags": [
+          "Partida"
+        ],
+        "summary": "Cancelar la partida",
+        "description": "Cancela la partida en donde se encuentre el jugador solicitante",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              },
+              "example": "{\"Gamertag\":\"JuanJuega\"}"
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "El proceso finalizó correctamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_500"
+                },
+                "examples": {
+                  "example1": {
+                    "value": {
+                      "Respuesta": "Partida cancelada correctamente"
+                    }
+                  },
+                  "example2": {
+                    "value": {
+                      "Respuesta": "Jugador no encontrado en la partida"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error en el proceso del registro",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_500"
+                },
+                "example": {
+                  "Respuesta": "Error al leer el archivo JSON"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/matchmaking/jugarturno": {
+      "post": {
+        "tags": [
+          "Partida"
+        ],
+        "summary": "Cancelar la partida",
+        "description": "Cancela la partida en donde se encuentre el jugador solicitante",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SolicitudJugarTurno"
+              },
+              "example": {
+                "Gamertag": "Messi10",
+                "Movimientos": [
+                  {
+                    "Escenario": 0,
+                    "Carta": 12
+                  },
+                  {
+                    "Escenario": 2,
+                    "Carta": 9
+                  }
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "El proceso finalizó correctamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_500"
+                },
+                "examples": {
+                  "example1": {
+                    "value": {
+                      "Respuesta": "Jugador no encontrado en la partida"
+                    }
+                  },
+                  "example2": {
+                    "value": {
+                      "Respuesta": "Juego terminado"
+                    }
+                  },
+                  "example3": {
+                    "value": {
+                      "Respuesta": "Ya se jugó un movimiento para Jugador en este turno"
+                    }
+                  },
+                  "example4": {
+                    "value": {
+                      "Respuesta": "Turno Jugado"
+                    }
+                  },
+                  "example5": {
+                    "value": {
+                      "Movimientos": [
+                        {
+                          "Escenario": 0,
+                          "Carta": 12
+                        },
+                        {
+                          "Escenario": 2,
+                          "Carta": 9
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error en el proceso del registro del turno",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_500"
+                },
+                "examples": {
+                  "example1": {
+                    "value": {
+                      "Respuesta": "Error al leer el archivo JSON"
+                    }
+                  },
+                  "example2": {
+                    "value": {
+                      "Respuesta": "Error al escribir los archivos JSON"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/matchmaking/guardarresultado": {
+      "post": {
+        "tags": [
+          "Partida"
+        ],
+        "summary": "Guardar resultado de la partida",
+        "description": "Guarda el resultado de la partida del jugador solicitante",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SolicitudGuardarResultado"
+              },
+              "example": {
+                "Gamertag": "Messi10",
+                "Resultado": 1
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "El proceso finalizó correctamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_500"
+                },
+                "example": {
+                  "Respuesta": "Resultados Guardados"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error en el proceso del registro",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_500"
+                },
+                "example": {
+                  "Respuesta": "Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Carta": {
+        "type": "object",
+        "properties": {
+          "IDCarta": {
+            "type": "integer"
+          },
+          "Costo": {
+            "type": "integer"
+          },
+          "Poder": {
+            "type": "integer"
+          },
+          "Imagen": {
+            "type": "string"
+          }
+        }
+      },
+      "Escenario": {
+        "type": "object",
+        "properties": {
+          "IDEscenario": {
+            "type": "integer"
+          },
+          "Imagen": {
+            "type": "string"
+          }
+        }
+      },
+      "Jugador": {
+        "type": "object",
+        "properties": {
+          "Gamertag": {
+            "type": "string"
+          },
+          "PartidasGanadas": {
+            "type": "integer"
+          },
+          "PartidasPerdidas": {
+            "type": "integer"
+          },
+          "Mazo": {
+            "type": "string"
+          },
+          "IDFoto": {
+            "type": "integer"
+          },
+          "contrasenia": {
+            "type": "string"
+          }
+        }
+      },
+      "SolicitudInicioSesion": {
+        "type": "object",
+        "properties": {
+          "Gamertag": {
+            "type": "string"
+          },
+          "contrasenia": {
+            "type": "string"
+          }
+        }
+      },
+      "FotoPerfil": {
+        "type": "object",
+        "properties": {
+          "IDFoto": {
+            "type": "integer"
+          },
+          "Imagen": {
+            "type": "string"
+          }
+        }
+      },
+      "SolicitudRegistrarJugador": {
+        "type": "object",
+        "properties": {
+          "gamertag": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "idFoto": {
+            "type": "integer"
+          }
+        }
+      },
+      "SolicitudModificarImagenPerfil": {
+        "type": "object",
+        "properties": {
+          "Gamertag": {
+            "type": "string"
+          },
+          "idFoto": {
+            "type": "integer"
+          }
+        }
+      },
+      "SolicitudModificarMazo": {
+        "type": "object",
+        "properties": {
+          "Gamertag": {
+            "type": "string"
+          },
+          "Mazo": {
+            "type": "string"
+          }
+        }
+      },
+      "SolicitudJugarTurno": {
+        "type": "object",
+        "properties": {
+          "Gamertag": {
+            "type": "string"
+          },
+          "Movimientos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SolicitudJugarTurno_Movimientos"
+            }
+          }
+        }
+      },
+      "SolicitudGuardarResultado": {
+        "type": "object",
+        "properties": {
+          "Gamertag": {
+            "type": "string"
+          },
+          "Resultado": {
+            "type": "integer"
+          }
+        }
+      },
+      "inline_response_500": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        }
+      },
+      "SolicitudJugarTurno_Movimientos": {
+        "type": "object",
+        "properties": {
+          "Escenario": {
+            "type": "integer"
+          },
+          "Carta": {
+            "type": "integer"
+          }
+        }
+      }
+    }
+  }
+}

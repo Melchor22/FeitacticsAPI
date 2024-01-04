@@ -5,10 +5,14 @@ const bodyParser = require('body-parser');
 const PartidaDAO = require('../DAOs/PartidaDAO');
 
 const path = require('path');
+const { log } = require('console');
 const matchmakingJSONPath = path.join(__dirname, '../data/matchmaking.json');
 const partidaJSONPath = path.join(__dirname, '../data/partida.json');
 
 router.post('/solicitarpartida', (req, res) => {
+
+    console.log("Solicitante");
+    console.log(req.body.Gamertag);
     //Recuperar Archivos JSON
     let archivoMatchmaking = [];
     let archivoPartida = [];
@@ -88,8 +92,13 @@ router.post('/solicitarpartida', (req, res) => {
                 "Consultado2": 0,
                 "Turno": "1"
             }
-
-            if (req.body.Gamertag !== 'guest' || archivoMatchmaking[0].Gamertag !== 'guest' || archivoMatchmaking[1].Gamertag !== 'guest') {
+            console.log("Error Partida");
+            console.log(req.body.Gamertag);
+            if (
+                !(req.body.Gamertag.includes('guest') ||
+                  archivoMatchmaking[0].Gamertag.includes('guest') ||
+                  archivoMatchmaking[1].Gamertag.includes('guest'))
+              ) {
                 PartidaDAO.guardarPartida(archivoMatchmaking[0].Gamertag, archivoMatchmaking[1].Gamertag, (err, cartas) => {
                     if (err) {
                         res.status(500).send({"Respuesta" : "Error al escribir los archivos JSON"});
@@ -202,7 +211,7 @@ router.post('/jugarturno', (req, res) => {
             }
         } else {
 
-            if (jugadorEnPartida.Jugador1 !== 'guest' || jugadorEnPartida.Jugador2 !== 'guest') {
+            if (!(jugadorEnPartida.Jugador1.includes('guest') || jugadorEnPartida.Jugador2.includes('guest'))) {
 
                 PartidaDAO.guardarTurno(jugadorEnPartida.Movimientos1, jugadorEnPartida.Movimientos2, jugadorEnPartida.Turno, jugadorEnPartida.idPartida, (err, resultado) => {
                     if (err) {
@@ -248,6 +257,16 @@ router.post('/jugarturno', (req, res) => {
 
     fs.writeFileSync(partidaJSONPath, JSON.stringify(archivoPartida, null, 2));
     return res.status(200).json({ "Respuesta": "Turno Jugado" });
+});
+
+router.post('/guardarresultado', (req, res) => {
+    PartidaDAO.guardarResultado(req.body.Gamertag, req.body.Resultado, (err, resultado) => {
+        if (err) {
+            res.status(500).json({"Respuesta": 'Error'});
+        } else {
+            res.status(200).json({ "Respuesta": 'Resultados Guardados' });
+        }
+    });
 });
 
 
