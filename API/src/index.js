@@ -1,7 +1,8 @@
+/* jshint esversion: 6 */
 const express = require('express');
 const app = express();
 const morgan = require('morgan');
-const {SwaggerDocs: V1SwaggerDocs} = require('./swagger')
+const {SwaggerDocs: V1SwaggerDocs} = require('./swagger');
 const routes = require('./routes');
 
 //settings

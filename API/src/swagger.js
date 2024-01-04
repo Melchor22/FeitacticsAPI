@@ -1,3 +1,4 @@
+/* jshint esversion: 6 */
 const fs = require('fs');
 const swaggerUi = require('swagger-ui-express');
 

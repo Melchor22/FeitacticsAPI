@@ -1,3 +1,4 @@
+/* jshint esversion: 6 */
 const conexion = require('../conexion');
 
 function recuperarEscenarios(callback) {

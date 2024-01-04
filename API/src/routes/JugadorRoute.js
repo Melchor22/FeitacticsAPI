@@ -1,3 +1,4 @@
+/* jshint esversion: 6 */
 const { Router } = require('express');
 const router = Router();
 const JugadoresDAO = require('../DAOs/JugadoresDAO');

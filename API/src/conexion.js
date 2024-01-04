@@ -1,3 +1,4 @@
+/* jshint esversion: 6 */
 let mysql = require('mysql');
 
 let conexion = mysql.createConnection({
